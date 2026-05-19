@@ -1,0 +1,120 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#06080C", "primaryColor": "#0E1117", "primaryBorderColor": "#3A445C", "primaryTextColor": "#E1DDC3", "lineColor": "#00B0C9", "secondaryColor": "#1A1E28", "tertiaryColor": "#1A1E28", "edgeLabelBackground": "#0E1117", "clusterBkg": "#0E1117", "clusterBorder": "#00B0C9", "titleColor": "#00B0C9", "nodeBorder": "#00B0C9", "mainBkg": "#0E1117", "nodeTextColor": "#E1DDC3", "fontFamily": "JetBrains Mono, monospace"}}}%%
+flowchart TD
+    subgraph ui_layer["UI Layer"]
+        direction LR
+        tui["Textual TUI (Phase 1)"]
+        tauri["Tauri + React (Phase 2)"]
+    end
+
+    subgraph pipeline_layer["Pipeline Engine"]
+        direction LR
+        stategraph["LangGraph StateGraph"]
+        prompt_gen["PromptGen"]
+        prompt_approval["PromptApproval"]
+        plan_gen["PlanGen"]
+        plan_approval["PlanApproval"]
+        execute["Execute"]
+        commit["Commit"]
+        test_gen["TestGen"]
+        review_queue["ReviewQueue"]
+        close["Close"]
+        stategraph --> prompt_gen --> prompt_approval --> plan_gen --> plan_approval --> execute --> commit --> test_gen --> review_queue --> close
+    end
+
+    subgraph persona_layer["Agent Personas"]
+        direction LR
+        pydantic["PydanticAI"]
+        prompt_writer["PromptWriter"]
+        planner["Planner"]
+        executor["Executor"]
+        tester["Tester"]
+        pydantic --> prompt_writer
+        pydantic --> planner
+        pydantic --> executor
+        pydantic --> tester
+    end
+
+    subgraph llm_layer["LLM Layer"]
+        direction LR
+        litellm["LiteLLM"]
+        claude_gpt["Claude / GPT"]
+        ollama["Ollama (local)"]
+        litellm --> claude_gpt
+        litellm --> ollama
+    end
+
+    subgraph rag_layer["RAG Layer"]
+        direction LR
+        obsidian["Obsidian Vault"]
+        skills["Skill MDs"]
+        game_repo["Game Repo"]
+        rag["LlamaIndex + BM25"]
+        obsidian --> rag
+        skills --> rag
+        game_repo --> rag
+    end
+
+    subgraph storage_layer["Storage"]
+        direction LR
+        sqlite["SQLite / SQLModel<br/>story / epic state"]
+        gitpython["GitPython<br/>VCS"]
+    end
+
+    subgraph integration_layer["Integration"]
+        direction LR
+        mcp["Godot MCP Pro"]
+    end
+
+    tui --> stategraph
+    tauri --> stategraph
+    prompt_gen --> prompt_writer
+    plan_gen --> planner
+    execute --> executor
+    test_gen --> tester
+    prompt_writer --> litellm
+    planner --> litellm
+    executor --> litellm
+    tester --> litellm
+    prompt_writer --> rag
+    planner --> rag
+    executor --> rag
+    tester --> rag
+    stategraph --> sqlite
+    commit --> gitpython
+    executor --> mcp
+
+    style ui_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style pipeline_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style persona_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style llm_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style rag_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style storage_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style integration_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+
+    style tui fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style tauri fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style stategraph fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style prompt_gen fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style prompt_approval fill:#FFE716,stroke:#00B0C9,color:#06080C
+    style plan_gen fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style plan_approval fill:#FFE716,stroke:#00B0C9,color:#06080C
+    style execute fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style commit fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style test_gen fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style review_queue fill:#FFE716,stroke:#00B0C9,color:#06080C
+    style close fill:#39E48B,stroke:#00B0C9,color:#06080C
+    style pydantic fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style prompt_writer fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style planner fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style executor fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style tester fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style litellm fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style claude_gpt fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style ollama fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style obsidian fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style skills fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style game_repo fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style rag fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style sqlite fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style gitpython fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style mcp fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3

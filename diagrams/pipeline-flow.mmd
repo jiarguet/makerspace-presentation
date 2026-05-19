@@ -1,0 +1,35 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#06080C", "primaryColor": "#0E1117", "primaryBorderColor": "#3A445C", "primaryTextColor": "#E1DDC3", "lineColor": "#00B0C9", "secondaryColor": "#1A1E28", "tertiaryColor": "#1A1E28", "edgeLabelBackground": "#0E1117", "clusterBkg": "#0E1117", "clusterBorder": "#00B0C9", "titleColor": "#00B0C9", "nodeBorder": "#00B0C9", "mainBkg": "#0E1117", "nodeTextColor": "#E1DDC3", "fontFamily": "JetBrains Mono, monospace"}}}%%
+flowchart LR
+    story_yaml["Story YAML<br/>(human writes)"] --> gtg_gate{"GTG Gate"}
+    gtg_gate -->|approved + deps closed| prompt_gen["PromptGen"]
+    prompt_gen --> prompt_gate{"Prompt Approval Gate<br/>prompt.md"}
+    prompt_gate -->|approved| plan_gen["PlanGen"]
+    plan_gen --> plan_approval["plan_approval<br/>(auto)"]
+    plan_approval --> execute["Execute<br/>(AI + Godot MCP Pro)"]
+    execute --> commit["Commit<br/>(GitPython, feature branch)"]
+    commit --> test_gen["TestGen"]
+    test_gen --> test_decision{"Test Result"}
+    test_decision -->|PASS| pass_result["PASS"]
+    test_decision -->|FAIL / GAPS| fail_result["FAIL / GAPS"]
+    pass_result --> review_nonblocking["Non-blocking Review<br/>(branch merges to main)"]
+    review_nonblocking --> story_closed["Story Closed"]
+    fail_result --> review_blocking["Blocking Review<br/>(branch stays)"]
+    review_blocking --> human_resolves["Human Resolves"]
+    human_resolves --> execute
+
+    style story_yaml fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style gtg_gate fill:#FFE716,stroke:#00B0C9,color:#06080C
+    style prompt_gen fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style prompt_gate fill:#FFE716,stroke:#00B0C9,color:#06080C
+    style plan_gen fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style plan_approval fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style execute fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style commit fill:#1A1E28,stroke:#00B0C9,stroke-width:3px,color:#E1DDC3
+    style test_gen fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style test_decision fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style pass_result fill:#39E48B,stroke:#00B0C9,color:#06080C
+    style fail_result fill:#FF0012,stroke:#00B0C9,color:#E1DDC3
+    style review_nonblocking fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style review_blocking fill:#FFE716,stroke:#00B0C9,color:#06080C
+    style human_resolves fill:#FFE716,stroke:#00B0C9,color:#06080C
+    style story_closed fill:#39E48B,stroke:#00B0C9,color:#06080C

@@ -1,0 +1,53 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#06080C", "primaryColor": "#0E1117", "primaryBorderColor": "#3A445C", "primaryTextColor": "#E1DDC3", "lineColor": "#00B0C9", "secondaryColor": "#1A1E28", "tertiaryColor": "#1A1E28", "edgeLabelBackground": "#0E1117", "clusterBkg": "#0E1117", "clusterBorder": "#00B0C9", "titleColor": "#00B0C9", "nodeBorder": "#00B0C9", "mainBkg": "#0E1117", "nodeTextColor": "#E1DDC3", "fontFamily": "JetBrains Mono, monospace"}}}%%
+flowchart LR
+    subgraph source_layer["Data Sources"]
+        direction TB
+        obsidian["Obsidian Vault<br/>(design docs, epics)"]
+        skills["Skill MDs<br/>(Godot patterns library)"]
+        game_repo["Game Repo<br/>(live codebase)"]
+    end
+
+    subgraph processing_layer["Indexing + Retrieval"]
+        direction LR
+        watchdog["Watchdog<br/>(monitors file changes)"]
+        llamaindex["LlamaIndex<br/>(parses, chunks)"]
+        bm25["BM25 Index"]
+        lancedb["LanceDB (future)"]
+    end
+
+    subgraph persona_layer["Persona Retrieval"]
+        direction TB
+        prompt_writer["PromptWriter<br/>(claude-sonnet-4.5)"]
+        planner["Planner<br/>(claude-opus-4.7)"]
+        executor["Executor<br/>(claude-sonnet-4.5 + MCP)"]
+        tester["Tester<br/>(claude-haiku-4.5)"]
+        mcp["Godot MCP Pro"]
+    end
+
+    obsidian --> watchdog
+    skills --> watchdog
+    game_repo --> watchdog
+    watchdog --> llamaindex --> bm25
+    llamaindex -.future vector.-> lancedb
+    bm25 -->|design_docs + epics + skills| prompt_writer
+    bm25 -->|game_repo + skills| planner
+    bm25 -->|game_repo + skills| executor
+    bm25 -->|game_repo + story acceptance criteria| tester
+    mcp -.tool access.-> executor
+
+    style source_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style processing_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style persona_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+
+    style obsidian fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style skills fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style game_repo fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style watchdog fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style llamaindex fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style bm25 fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style lancedb fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style prompt_writer fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style planner fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style executor fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style tester fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style mcp fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3

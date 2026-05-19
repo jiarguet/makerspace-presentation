@@ -1,0 +1,35 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#06080C", "primaryColor": "#0E1117", "primaryBorderColor": "#3A445C", "primaryTextColor": "#E1DDC3", "lineColor": "#00B0C9", "secondaryColor": "#1A1E28", "tertiaryColor": "#1A1E28", "edgeLabelBackground": "#0E1117", "clusterBkg": "#0E1117", "clusterBorder": "#00B0C9", "titleColor": "#00B0C9", "nodeBorder": "#00B0C9", "mainBkg": "#0E1117", "nodeTextColor": "#E1DDC3", "fontFamily": "JetBrains Mono, monospace"}}}%%
+stateDiagram-v2
+    [*] --> draft
+    draft --> gtg : human approves + deps closed
+    gtg --> prompt_pending : pipeline triggered
+    prompt_pending --> prompt_review : PromptWriter complete
+    prompt_review --> planning : human approves prompt
+    prompt_review --> prompt_pending : human rejects (PromptWriter reruns)
+    planning --> executing : Planner complete
+    executing --> testing : Executor commits
+    testing --> review_nonblocking : tests pass
+    testing --> review_blocking : tests fail
+    review_nonblocking --> closed : auto-merge
+    review_blocking --> executing : human re-triggers
+    closed --> [*]
+
+    note right of gtg
+        All dependencies closed
+        + human_approved = true
+    end note
+
+    note right of prompt_review
+        ONLY MANDATORY
+        HUMAN GATE
+    end note
+
+    note right of review_nonblocking
+        Branch merges to main
+        Next story starts immediately
+    end note
+
+    note right of review_blocking
+        Branch held
+        Human must resolve
+    end note

@@ -1,0 +1,121 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#06080C", "primaryColor": "#0E1117", "primaryBorderColor": "#3A445C", "primaryTextColor": "#E1DDC3", "lineColor": "#00B0C9", "secondaryColor": "#1A1E28", "tertiaryColor": "#1A1E28", "edgeLabelBackground": "#0E1117", "clusterBkg": "#0E1117", "clusterBorder": "#00B0C9", "titleColor": "#00B0C9", "nodeBorder": "#00B0C9", "mainBkg": "#0E1117", "nodeTextColor": "#E1DDC3", "fontFamily": "JetBrains Mono, monospace"}}}%%
+flowchart TB
+    subgraph presentation_layer["PRESENTATION LAYER"]
+        direction LR
+        tui["Textual TUI (Phase 1)"]
+        tauri["Tauri + React (Phase 2)"]
+    end
+
+    subgraph orchestration_layer["ORCHESTRATION LAYER"]
+        direction LR
+        stategraph["LangGraph StateGraph"]
+        saver["SqliteSaver checkpoint"]
+    end
+
+    subgraph persona_layer["PERSONA LAYER"]
+        direction LR
+        pydantic["PydanticAI agents"]
+        prompt_writer["PromptWriter"]
+        planner["Planner"]
+        executor["Executor"]
+        tester["Tester"]
+        pydantic --> prompt_writer
+        pydantic --> planner
+        pydantic --> executor
+        pydantic --> tester
+    end
+
+    subgraph llm_layer["LLM LAYER"]
+        direction LR
+        litellm["LiteLLM router"]
+        claude["Anthropic Claude"]
+        gpt["OpenAI GPT"]
+        ollama["Ollama (local)"]
+    end
+
+    subgraph context_layer["CONTEXT LAYER"]
+        direction LR
+        llamaindex["LlamaIndex + BM25"]
+        lancedb["LanceDB (future vector)"]
+        watchdog["Watchdog file watcher"]
+    end
+
+    subgraph storage_layer["STORAGE LAYER"]
+        direction LR
+        sqlite["SQLite / SQLModel"]
+        yaml["YAML files"]
+        toml["TOML config"]
+    end
+
+    subgraph integration_layer["INTEGRATION LAYER"]
+        direction LR
+        mcp["Godot MCP Pro"]
+        gitpython["GitPython"]
+        plyer["plyer (notifications)"]
+    end
+
+    %% UI → Orchestration
+    tui --> stategraph
+    tauri --> stategraph
+    stategraph --> saver
+
+    %% Orchestration → Personas
+    stategraph --> pydantic
+
+    %% Personas → LLM
+    prompt_writer --> litellm
+    planner --> litellm
+    executor --> litellm
+    tester --> litellm
+    litellm --> claude
+    litellm --> gpt
+    litellm --> ollama
+
+    %% Personas → Context (RAG)
+    prompt_writer --> llamaindex
+    planner --> llamaindex
+    executor --> llamaindex
+    tester --> llamaindex
+    watchdog --> llamaindex
+    llamaindex --> lancedb
+
+    %% Context → Storage
+    llamaindex --> sqlite
+    sqlite --> yaml
+    yaml --> toml
+
+    %% Personas → Integration
+    executor --> mcp
+    stategraph --> gitpython
+    stategraph --> plyer
+
+    style presentation_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style orchestration_layer fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style persona_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style llm_layer fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style context_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style storage_layer fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style integration_layer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+
+    style tui fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style tauri fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style stategraph fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style saver fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style pydantic fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style prompt_writer fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style planner fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style executor fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style tester fill:#9B4AEE,stroke:#00B0C9,color:#E1DDC3
+    style litellm fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style claude fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style gpt fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style ollama fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style llamaindex fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style lancedb fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style watchdog fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style sqlite fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style yaml fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style toml fill:#1A1E28,stroke:#00B0C9,color:#E1DDC3
+    style mcp fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style gitpython fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
+    style plyer fill:#0E1117,stroke:#00B0C9,color:#E1DDC3
