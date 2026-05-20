@@ -60,7 +60,8 @@ This page lists both core open-source dependencies and optional operational inte
 | Repo name | GitHub URL | License | Stars | Role in Relevant | What it does |
 |---|---|---|---:|---|---|
 | Godot 4 | https://github.com/godotengine/godot | MIT | N/A | The target engine that Relevant plans, edits, tests, and reviews against. | Open-source game engine used to build the actual project under automation. |
-| Godot MCP Pro | N/A (custom/commercial MCP server) | Commercial / custom | N/A | Optional engine integration that gives agents structured access to the Godot editor and running game. | MCP server that exposes Godot scenes, scripts, tests, and runtime state as callable tools. |
+| Godot MCP Pro | https://github.com/youichi-uda/godot-mcp-pro | Proprietary (MIT plugin; paid server) | 352 | Optional engine integration that gives agents structured access to the Godot editor and running game. | Premium MCP server with 172 tools covering scenes, nodes, scripts, animation, physics, audio, shaders, runtime inspection, and testing. Plugin is free; Node.js server requires a one-time purchase. |
+| GD Agentic Skills | https://github.com/thedivergentai/gd-agentic-skills | LGPL-3.0 | 175 | Provides Relevant's agents with expert-level, deterministic Godot 4 knowledge as structured long-term memory. | Agent-first knowledge library of 94 specialized skills and 982 production GDScript scripts for Godot 4.5+, consumed via the DIA (Discovery-Ingestion-Application) loop. |
 
 ## AI Harness
 

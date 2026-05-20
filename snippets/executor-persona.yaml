@@ -1,6 +1,6 @@
 name: Executor
 role: executor
-model: anthropic/claude-sonnet-4-5
+model: claude-sonnet-4-5
 
 # rag_scopes limits retrieval to the parts of the project this persona should read.
 rag_scopes:
